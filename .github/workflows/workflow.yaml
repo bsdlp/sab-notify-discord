@@ -3,6 +3,7 @@ on: [push]
 
 jobs:
   lint:
+    runs-on: ubuntu-latest
     steps:
       - name: golangci-lint
         uses: docker://golangci/golangci-lint
@@ -11,6 +12,7 @@ jobs:
           args: "run ./..."
 
   test:
+    runs-on: ubuntu-latest
     steps:
       - name: go test
         uses: docker://golang:latest
@@ -19,6 +21,7 @@ jobs:
           args: "test -v ./..."
 
   build:
+    runs-on: ubuntu-latest
     steps:
       - name: go build
         uses: docker://golang:latest
