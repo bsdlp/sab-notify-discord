@@ -3,11 +3,16 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"text/template"
 )
 
-func notify(webhookURL string, params parameters) error {
+func notify(params parameters) error {
+	if params.webhookURL != "" {
+		return errors.New("webhook url is a required parameter")
+	}
+
 	msg, err := formatMessage(params)
 	if err != nil {
 		return err
@@ -19,7 +24,7 @@ func notify(webhookURL string, params parameters) error {
 		return err
 	}
 
-	_, err = http.DefaultClient.Post(webhookURL, "application/json", &buf)
+	_, err = http.DefaultClient.Post(params.webhookURL, "application/json", &buf)
 	return err
 }
 

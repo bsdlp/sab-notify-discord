@@ -1,7 +1,3 @@
 # sab-notify-discord
 
-## configuration
-
-Reads `$HOME/.config/sab-notify-discord.json`.
-
-* `WebhookURL`: discord webhook URL
+pass the discord webhook url as the 4th command line argument

@@ -6,14 +6,9 @@ import (
 )
 
 func main() {
-	cfg, err := LoadConfig()
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	flag.Parse()
 	parameters := parseParameters()
-	err = notify(cfg.WebhookURL, parameters)
+	err := notify(parameters)
 	if err != nil {
 		log.Fatal(err)
 	}
