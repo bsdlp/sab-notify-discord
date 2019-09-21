@@ -4,27 +4,26 @@ on: [push]
 jobs:
   lint:
     runs-on: ubuntu-latest
+    container:
+      image: golangci/golangci-lint
     steps:
-      - name: golangci-lint
-        uses: docker://golangci/golangci-lint
-        with:
-          entrypoint: "golangci-lint"
-          args: "run ./..."
+      - uses: actions/checkout@master
+      - run: |
+          golangci-lint run ./...
 
   test:
     runs-on: ubuntu-latest
+    container:
+      image: golang:latest
     steps:
-      - name: go test
-        uses: docker://golang:latest
-        with:
-          entrypoint: "go"
-          args: "test -v ./..."
+      - uses: actions/checkout@master
+      - run: |
+          go test -v -race ./...
 
   build:
     runs-on: ubuntu-latest
+    container:
+      image: golang:latest
     steps:
-      - name: go build
-        uses: docker://golang:latest
-        with:
-          entrypoint: "go"
-          args: "build ./..."
+      - uses: actions/checkout@master
+      - run: go build ./...
