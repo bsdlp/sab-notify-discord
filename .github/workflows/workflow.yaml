@@ -1,0 +1,27 @@
+name: build pipeline
+on: [push]
+
+jobs:
+  lint:
+    steps:
+      - name: golangci-lint
+        uses: docker://golangci/golangci-lint
+        with:
+          entrypoint: "golangci-lint"
+          args: "run ./..."
+
+  test:
+    steps:
+      - name: go test
+        uses: docker://golang:latest
+        with:
+          entrypoint: "go"
+          args: "test -v ./..."
+
+  build:
+    steps:
+      - name: go build
+        uses: docker://golang:latest
+        with:
+          entrypoint: "go"
+          args: "build ./..."
