@@ -52,7 +52,3 @@ jobs:
           docker tag sab-notify-discord:latest docker.pkg.github.com/bsdlp/sab-notify-discord/sab-notify-discord:$GITHUB_SHA
           docker login docker.pkg.github.com -u bsdlp -p $GITHUB_TOKEN
           docker push docker.pkg.github.com/bsdlp/sab-notify-discord/sab-notify-discord:$GITHUB_SHA
-      - run: |
-          docker tag docker.pkg.github.com/bsdlp/sab-notify-discord/sab-notify-discord:$GITHUB_SHA docker.pkg.github.com/bsdlp/sab-notify-discord/sab-notify-discord:latest
-          docker push docker.pkg.github.com/bsdlp/sab-notify-discord/sab-notify-discord:latest
-        if: github.ref == 'master'
