@@ -9,7 +9,7 @@ import (
 )
 
 func notify(params parameters) error {
-	if params.webhookURL != "" {
+	if params.WebhookURL == "" {
 		return errors.New("webhook url is a required parameter")
 	}
 
@@ -24,14 +24,14 @@ func notify(params parameters) error {
 		return err
 	}
 
-	_, err = http.DefaultClient.Post(params.webhookURL, "application/json", &buf)
+	_, err = http.DefaultClient.Post(params.WebhookURL, "application/json", &buf)
 	return err
 }
 
 func formatMessage(params parameters) (string, error) {
-	const msgFormat = `__{{.notificationType}}__
-{{.notificationTitle}}
-{{.notificationMessage}}`
+	const msgFormat = `__{{.NotificationType}}__
+{{.NotificationTitle}}
+{{.NotificationMessage}}`
 
 	tmpl, err := template.New("msg").Parse(msgFormat)
 	if err != nil {

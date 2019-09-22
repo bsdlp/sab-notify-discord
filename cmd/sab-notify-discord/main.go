@@ -1,14 +1,16 @@
 package main
 
 import (
-	"flag"
 	"log"
 )
 
 func main() {
-	flag.Parse()
-	parameters := parseParameters()
-	err := notify(parameters)
+	parameters, err := parseParameters()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = notify(parameters)
 	if err != nil {
 		log.Fatal(err)
 	}
