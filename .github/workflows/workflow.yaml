@@ -8,8 +8,7 @@ jobs:
       image: golangci/golangci-lint
     steps:
       - uses: actions/checkout@master
-      - run: |
-          golangci-lint run ./...
+      - run: golangci-lint run ./...
 
   test:
     runs-on: ubuntu-latest
@@ -17,13 +16,43 @@ jobs:
       image: golang:latest
     steps:
       - uses: actions/checkout@master
-      - run: |
-          go test -v -race ./...
+      - run: go test -v -race ./...
 
   build:
+    needs: [lint, test]
     runs-on: ubuntu-latest
     container:
-      image: golang:latest
+      image: docker:stable
     steps:
       - uses: actions/checkout@master
-      - run: go build ./...
+      - run: |
+          docker build -t sab-notify-discord:latest .
+          mkdir -p build
+          docker save sab-notify-discord:latest | gzip > build/sab-notify-discord.tar.gz
+      - uses: actions/upload-artifact@master
+        with:
+          name: build
+          path: ./build
+
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    container:
+      image: docker:stable
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/download-artifact@master
+        with:
+          name: build
+          path: ./build
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_PERSONAL_ACCESS_TOKEN }}
+        run: |
+          docker load --input ./build/sab-notify-discord.tar.gz
+          docker tag sab-notify-discord:latest docker.pkg.github.com/bsdlp/sab-notify-discord/sab-notify-discord:$GITHUB_SHA
+          docker login docker.pkg.github.com -u bsdlp -p $GITHUB_TOKEN
+          docker push docker.pkg.github.com/bsdlp/sab-notify-discord/sab-notify-discord:$GITHUB_SHA
+      - run: |
+          docker tag docker.pkg.github.com/bsdlp/sab-notify-discord/sab-notify-discord:$GITHUB_SHA docker.pkg.github.com/bsdlp/sab-notify-discord/sab-notify-discord:latest
+          docker push docker.pkg.github.com/bsdlp/sab-notify-discord/sab-notify-discord:latest
+        if: github.ref == 'master'
